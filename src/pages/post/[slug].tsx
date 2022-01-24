@@ -1,4 +1,3 @@
-import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router'
 
@@ -12,6 +11,7 @@ import { FiCalendar, FiUser, FiClock } from 'react-icons/fi'
 import { RichText } from 'prismic-dom';
 import { format } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
+import Comments from '../../components/Comments';
 
 interface Post {
   first_publication_date: string | null;
@@ -62,12 +62,17 @@ export default function Post({ post }: PostProps) {
       </Head>
 
       <main className={styles.postContainer}>
+
         <img src={post.data.banner.url} />
+
         <div className={styles.postContent}>
+
           <div className={styles.postTitleContainer}>
             <h1>{post.data.title}</h1>
           </div>
+
           <div className={styles.postInfoContainer}>
+
             <div className={styles.postInfo}>
               <FiCalendar/>
               <time>{
@@ -82,16 +87,21 @@ export default function Post({ post }: PostProps) {
                 )}
               </time>
             </div>
+
             <div className={styles.postInfo}>
               <FiUser/>
               <span>{post.data.author}</span>
             </div>
+
             <div className={styles.postInfo}>
               <FiClock/>
               <span>{`${calculateEstimatedReadingTime(post)} min`}</span>
             </div>
+
           </div>
+
           <div className={styles.postSectionContainer}>
+
             {post.data.content.map(content => (
               <div className={styles.postSection} key={content.heading}>
                 <h2>{content.heading}</h2>
@@ -100,9 +110,14 @@ export default function Post({ post }: PostProps) {
                 />
               </div>
             ))}
+
           </div>
+
         </div>
+
       </main>
+      
+      <Comments />
     </>
   )
 }
