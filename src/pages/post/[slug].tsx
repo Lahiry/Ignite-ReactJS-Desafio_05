@@ -12,6 +12,8 @@ import { RichText } from 'prismic-dom';
 import { format } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
 import Comments from '../../components/Comments';
+import Link from 'next/link';
+import { useEffect } from 'react';
 
 interface Post {
   first_publication_date: string | null;
@@ -32,9 +34,14 @@ interface Post {
 
 interface PostProps {
   post: Post;
+  preview: boolean;
 }
 
-export default function Post({ post }: PostProps) {
+export default function Post({ post, preview }: PostProps) {
+
+  useEffect(() => {
+    console.log(post)
+  }, [])
   const router = useRouter()
 
   if (router.isFallback) {
@@ -118,6 +125,14 @@ export default function Post({ post }: PostProps) {
       </main>
       
       <Comments />
+
+      {preview && (
+        <aside className={commonStyles.exitPreviewButtonContainer}>
+          <Link href="/api/exit-preview">
+            <a className={commonStyles.exitPreviewButton}>Sair do modo Preview</a>
+          </Link>
+        </aside>
+      )}
     </>
   )
 }
@@ -140,18 +155,25 @@ export const getStaticPaths = async () => {
   };
 };
 
-export const getStaticProps = async ({ params }) => {
+export const getStaticProps = async ({
+  params,
+  preview = false,
+  previewData
+}) => {
   const { slug } = params;
 
   const prismic = getPrismicClient();
 
-  const response = await prismic.getByUID('post', String(slug), {});
+  const response = await prismic.getByUID('post', String(slug), {
+    ref: previewData?.ref ?? null,
+  });
 
   const post: Post = response;
 
   return {
     props: {
-      post
+      post,
+      preview
     },
     redirect: 60 * 30 // 30 minutes
   }
