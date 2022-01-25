@@ -24,21 +24,34 @@
   }
 }
 
-.postInfoContainer{
-  display: flex;
+.postInfoContainer {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  color: var(--gray-300);
+  font-size: 0.9rem;
+  
+  time {
+    font-style: italic;
+  }
+}
+
+.postMainInfoContainer{
+  display: flex;
+  margin-bottom: 1rem;
 }
 
 .postInfo {
   display: flex;
   align-items: center;
   margin: 1.75rem 1.5rem 0 0;
-  color: var(--gray-300);
   font-size: 1.1rem;
+  
   
   time {
     padding-left: 0.5rem;
     font-size: 0.9rem;
+    font-style: normal;
   }
 
   span {
@@ -124,7 +137,6 @@
   flex-direction: column;
   align-items: flex-start;
   text-align: left;
-  
 }
 
 .nextPost {

@@ -18,6 +18,7 @@ import { useEffect } from 'react';
 interface Post {
   uid: string;
   first_publication_date: string | null;
+  last_publication_date: string | null;
   data: {
     title: string;
     banner: {
@@ -79,30 +80,44 @@ export default function Post({ post, prevPost, nextPost, preview }: PostProps) {
 
           <div className={styles.postInfoContainer}>
 
-            <div className={styles.postInfo}>
-              <FiCalendar/>
-              <time>{
-                format(
-                  new Date(
-                    post.first_publication_date,
-                  ),
-                  'PP',
-                  {
-                    locale: ptBR,
-                  }
-                )}
-              </time>
+            <div className={styles.postMainInfoContainer}>
+              <div className={styles.postInfo}>
+                <FiCalendar/>
+                <time>{
+                  format(
+                    new Date(
+                      post.first_publication_date,
+                    ),
+                    'PP',
+                    {
+                      locale: ptBR,
+                    }
+                  )}
+                </time>
+              </div>
+
+              <div className={styles.postInfo}>
+                <FiUser/>
+                <span>{post.data.author}</span>
+              </div>
+
+              <div className={styles.postInfo}>
+                <FiClock/>
+                <span>{`${calculateEstimatedReadingTime(post)} min`}</span>
+              </div>
             </div>
 
-            <div className={styles.postInfo}>
-              <FiUser/>
-              <span>{post.data.author}</span>
-            </div>
-
-            <div className={styles.postInfo}>
-              <FiClock/>
-              <span>{`${calculateEstimatedReadingTime(post)} min`}</span>
-            </div>
+            <time>{
+              format(
+                new Date(
+                  post.last_publication_date,
+                ),
+                "'* editado em 'PP', às 'p",
+                {
+                  locale: ptBR,
+                }
+              )}
+            </time>
 
           </div>
 
@@ -124,23 +139,29 @@ export default function Post({ post, prevPost, nextPost, preview }: PostProps) {
         <div className={styles.borderContainer}></div>
 
         <footer className={styles.postNavigation}>
-          {prevPost ? 
-            <div className={styles.prevPost}>
-              {prevPost.data.title}
-              <Link href={`/post/${prevPost.uid}`}>
-                <a>Post anterior</a>
-              </Link>
-            </div>
-          : null}
 
-          {nextPost ? 
-            <div className={styles.nextPost}>
-              {nextPost.data.title}
-              <Link href={`/post/${nextPost.uid}`}>
-                <a>Próximo post</a>
-              </Link>
-            </div>
-          : null}
+          <div className={styles.prevPost}>
+            {prevPost ?
+              <>
+                {prevPost.data.title}
+                <Link href={`/post/${prevPost.uid}`}>
+                  <a>Post anterior</a>
+                </Link>
+              </>
+            : null}   
+          </div>
+
+          <div className={styles.nextPost}>
+            {nextPost ?
+              <>
+                {nextPost.data.title}
+                <Link href={`/post/${nextPost.uid}`}>
+                  <a>Próximo post</a>
+                </Link>
+              </>
+            : null}   
+          </div>
+          
         </footer>
 
       </main>
