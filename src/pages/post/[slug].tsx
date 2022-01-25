@@ -16,6 +16,7 @@ import Link from 'next/link';
 import { useEffect } from 'react';
 
 interface Post {
+  uid: string;
   first_publication_date: string | null;
   data: {
     title: string;
@@ -34,10 +35,12 @@ interface Post {
 
 interface PostProps {
   post: Post;
+  prevPost: Post | null;
+  nextPost: Post | null;
   preview: boolean;
 }
 
-export default function Post({ post, preview }: PostProps) {
+export default function Post({ post, prevPost, nextPost, preview }: PostProps) {
   const router = useRouter()
 
   if (router.isFallback) {
@@ -118,6 +121,28 @@ export default function Post({ post, preview }: PostProps) {
 
         </div>
 
+        <div className={styles.borderContainer}></div>
+
+        <footer className={styles.postNavigation}>
+          {prevPost ? 
+            <div className={styles.prevPost}>
+              {prevPost.data.title}
+              <Link href={`/post/${prevPost.uid}`}>
+                <a>Post anterior</a>
+              </Link>
+            </div>
+          : null}
+
+          {nextPost ? 
+            <div className={styles.nextPost}>
+              {nextPost.data.title}
+              <Link href={`/post/${nextPost.uid}`}>
+                <a>Próximo post</a>
+              </Link>
+            </div>
+          : null}
+        </footer>
+
       </main>
       
       <Comments />
@@ -164,20 +189,45 @@ export const getStaticProps = async ({
     ref: previewData?.ref ?? null,
   });
 
-  const post: Post = response;
+  const post: Post = {
+    ...response,
+    uid: response.id
+  };
+
+  const prevPostResponse = await prismic.query([
+    Prismic.predicates.at('document.type', 'post')
+  ], {
+    pageSize: 1, 
+    after: post.uid, 
+    orderings: '[document.first_publication_date]'
+  });
+
+  const nextPostResponse = await prismic.query([
+    Prismic.predicates.at('document.type', 'post')
+  ], {
+    pageSize: 1, 
+    after: post.uid,
+    orderings: '[document.first_publication_date desc]'
+  })
+
+  const prevPost = prevPostResponse.results[0]
+
+  const nextPost = nextPostResponse.results[0]
 
   if (!response) {
-  return {
-    redirect: {
-      destination: '/',
-      permanent: false
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false
+      }
     }
   }
-}
 
   return {
     props: {
       post,
+      prevPost: prevPost ?? null,
+      nextPost: nextPost ?? null,
       preview
     },
     redirect: 60 * 30 // 30 minutes
