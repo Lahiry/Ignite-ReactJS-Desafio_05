@@ -38,10 +38,6 @@ interface PostProps {
 }
 
 export default function Post({ post, preview }: PostProps) {
-
-  useEffect(() => {
-    console.log(post)
-  }, [])
   const router = useRouter()
 
   if (router.isFallback) {
@@ -169,6 +165,15 @@ export const getStaticProps = async ({
   });
 
   const post: Post = response;
+
+  if (!response) {
+  return {
+    redirect: {
+      destination: '/',
+      permanent: false
+    }
+  }
+}
 
   return {
     props: {

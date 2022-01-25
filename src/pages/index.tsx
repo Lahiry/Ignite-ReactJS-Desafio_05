@@ -62,7 +62,6 @@ export default function Home({ postsPagination, preview }: HomeProps) {
         }))
       ]
       const updatedPosts = currentPosts.concat(nextPosts)
-      console.log(updatedPosts)
       setPosts(updatedPosts)
       setNextPage(data.next_page)
     })
@@ -77,8 +76,8 @@ export default function Home({ postsPagination, preview }: HomeProps) {
       <main className={styles.container}>
         <div className={styles.posts}>
           {posts.map(post => (
-            <Link href={`post/${post.uid}`}>
-              <a key={post.uid}>
+            <Link href={`/post/${post.uid}`} key={post.uid}>
+              <a>
                 <strong>{post.data.title}</strong>
                 <p>{post.data.subtitle}</p>
                 <div>
